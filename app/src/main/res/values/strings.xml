@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">MyoTester</string>
+    <string name="welcomeMessage">Ready for workout?</string>
+    <string name="welcomeButton">I\'m Ready!</string>>
+    <string name="measureStartButton">Start</string>>
+    <string name="measureStopButton">Stop</string>>
+    <string name="textMeasure">Press start when ready</string>>
+    <string name="countLabel">Workout count:</string>>
 </resources>
