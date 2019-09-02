@@ -4,8 +4,17 @@
     <string name="welcomeButton">I\'m Ready!</string>>
     <string name="measureStartButton">Start</string>>
     <string name="measureStopButton">Stop</string>>
-    <string name="textMeasure">Press start when ready to test</string>>
-    <string name="textMeasure_stop">Press stop when ready to test</string>>
-    <string name="countLabel">Workout count:</string>>
-    <string name="qqq">Workout count:</string>>
+    <string name="textMeasure">Press Test-run to see the protocol, OR press START to begin a group of tests</string>>
+    <string name="textMeasure_stop">Press STOP when getting fatigue</string>>
+    <string name="testRunMessage">Please check the protocol</string>>
+    <string name="countLabel">Current workout count:</string>>
+    <string name="savedWorkoutCount">Saved workout count: </string>>
+    <string name="testRunButton">Test-run</string>>
+    <string name="protoWait">(Wait to begin)\nProtocol instructions will appear here</string>>
+    <string name="protoSteady">Please be steady for 3s</string>>
+    <string name="protoUp">Please put the weight UP in 2s</string>>
+    <string name="protoHold">Please hold the weight for 3s</string>>
+    <string name="protoDown">Please put the weight DOWN in 2s</string>>
+    <string name="protoRelax">Please relax and prepare for next workout</string>>
+    <string name="stopFlagMessage">The test will stop...</string>>
 </resources>
