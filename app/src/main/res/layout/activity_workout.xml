@@ -8,23 +8,24 @@
 
     <ProgressBar
         android:id="@+id/pb"
-        style="@android:style/Widget.DeviceDefault.ProgressBar.Horizontal"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="128dp"
         android:max="100"
         android:progress="80"
-        app:layout_constraintBottom_toTopOf="@+id/btnStart"
+        app:layout_constraintBottom_toTopOf="@+id/btn_Start"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
-        android:id="@+id/btnStart"
+        android:id="@+id/btn_Start"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="64dp"
         android:layout_marginLeft="64dp"
         android:layout_marginBottom="64dp"
+        android:onClick="singleProcess"
         android:text="@string/measureStartButton"
         android:textColor="#4CAF50"
         android:textSize="18sp"
@@ -32,12 +33,13 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
-        android:id="@+id/btnStop"
+        android:id="@+id/btn_Stop"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="64dp"
         android:layout_marginRight="64dp"
         android:layout_marginBottom="64dp"
+        android:enabled="false"
         android:text="@string/measureStopButton"
         android:textColor="#E91E63"
         android:textSize="18sp"
@@ -62,6 +64,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="128dp"
         android:layout_marginLeft="128dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginBottom="32dp"
         android:text="@string/countLabel"
         android:textColor="#000000"
         android:textSize="18sp"
@@ -70,19 +74,49 @@
         app:layout_constraintTop_toBottomOf="@+id/tv_instruction" />
 
     <TextView
-        android:id="@+id/tv_count"
+        android:id="@+id/tv_countWorkout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="81dp"
-        android:layout_marginBottom="86dp"
-        android:text="1"
+        android:layout_marginBottom="81dp"
+        android:text="0"
         android:textColor="#000000"
         android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@+id/pb"
         app:layout_constraintStart_toEndOf="@+id/tv_count_label"
-        app:layout_constraintTop_toBottomOf="@+id/tv_instruction"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_instruction" />
+
+    <TextView
+        android:id="@+id/tv_step"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:textColor="#000000"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@+id/pb"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_countDown"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:textColor="#000000"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/pb" />
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="autoProcess"
+        android:text="Button"
+        tools:layout_editor_absoluteX="62dp"
+        tools:layout_editor_absoluteY="430dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -4,6 +4,8 @@
     <string name="welcomeButton">I\'m Ready!</string>>
     <string name="measureStartButton">Start</string>>
     <string name="measureStopButton">Stop</string>>
-    <string name="textMeasure">Press start when ready</string>>
+    <string name="textMeasure">Press start when ready to test</string>>
+    <string name="textMeasure_stop">Press stop when ready to test</string>>
     <string name="countLabel">Workout count:</string>>
+    <string name="qqq">Workout count:</string>>
 </resources>
