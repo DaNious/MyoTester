@@ -12,6 +12,7 @@
         android:layout_height="52dp"
         android:onClick="start2Setup"
         android:text="@string/welcomeButton"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

@@ -3,6 +3,7 @@ package pitt.edu.danious.myotester;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioRecord;
@@ -47,11 +48,15 @@ public class WorkoutActivity extends AppCompatActivity {
     private boolean isRecording = false;
     private int workoutCnt = 0;
     public static final String TAG = "Record Thread";
+    private String folderName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_workout);
+        //Get save folder name
+        Intent setupIntent = getIntent();
+        folderName = setupIntent.getStringExtra("extra_data");
 
         //UI control instances
         pb = (ProgressBar) findViewById(R.id.pb);
@@ -105,7 +110,7 @@ public class WorkoutActivity extends AppCompatActivity {
         Date date = new Date();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
         file = new File(Environment.getExternalStorageDirectory().getAbsolutePath()
-                        + "/DriveSyncFiles/" + "Name" + "_musclePCM" + dateFormat.format(date) + ".pcm");
+                        + "/DriveSyncFiles/" + folderName + "/musclePCM_" + dateFormat.format(date) + ".pcm");
         Log.i(TAG,"生成文件");
         Thread recordThread = new Thread(new Runnable() {
             @Override

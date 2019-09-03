@@ -6,16 +6,38 @@
     android:layout_height="match_parent"
     tools:context=".SetupActivity">
 
+    <EditText
+        android:id="@+id/et_weight"
+        android:layout_width="108dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="64dp"
+        android:ems="10"
+        android:gravity="center"
+        android:inputType="textPersonName"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/et_name" />
+
+    <TextView
+        android:id="@+id/tv_weightLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="64dp"
+        android:layout_marginTop="24dp"
+        android:text="@string/weightLabel"
+        android:textColor="#000000"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_nameLabel" />
+
     <Spinner
         android:id="@+id/sp_group"
         android:layout_width="108dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
         android:layout_marginEnd="64dp"
         android:entries="@array/groupSelection"
         android:spinnerMode="dialog"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/sp_arm" />
+        app:layout_constraintTop_toTopOf="@+id/tv_groupLabel" />
 
     <TextView
         android:id="@+id/tv_groupLabel"
@@ -39,7 +61,7 @@
         android:textColor="#000000"
         android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_nameLabel" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_weightLabel" />
 
     <TextView
         android:id="@+id/tv_infoLabel"
@@ -62,6 +84,7 @@
         android:text="@string/ConfirmLabel"
         android:textColor="#E91E63"
         android:textSize="18sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -82,8 +105,8 @@
         android:id="@+id/et_name"
         android:layout_width="108dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="22dp"
         android:layout_marginEnd="64dp"
+        android:layout_marginTop="22dp"
         android:ems="10"
         android:gravity="center"
         android:inputType="textPersonName"
