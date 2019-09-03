@@ -10,7 +10,7 @@
         android:id="@+id/btn_ready"
         android:layout_width="145dp"
         android:layout_height="52dp"
-        android:onClick="start2Test"
+        android:onClick="start2Setup"
         android:text="@string/welcomeButton"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
