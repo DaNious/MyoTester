@@ -35,6 +35,12 @@ import java.util.TimerTask;
 public class WorkoutActivity extends AppCompatActivity {
 
     MediaPlayer player = new MediaPlayer();
+    MediaPlayer voicePlayer = new MediaPlayer();
+//    MediaPlayer steadyPlayer = new MediaPlayer();
+//    MediaPlayer putUpPlayer = new MediaPlayer();
+//    MediaPlayer holdPlayer = new MediaPlayer();
+//    MediaPlayer putDownPlayer = new MediaPlayer();
+//    MediaPlayer relaxPlayer = new MediaPlayer();
     private Timer timer1, timer2, timer3;
     private File file;
     // UI controls
@@ -90,7 +96,69 @@ public class WorkoutActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        //Initialize all voice instruction players
+        //initVoicePlayers();
     }
+    //region Use prepareAsync for instruction voices
+    /*
+    public void initVoicePlayers(){
+        try {
+            steadyPlayer.reset();
+            Uri setDataSourceUri = Uri.parse("android.resource://pitt.edu.danious.myotester/" + R.raw.steady_voice);
+            steadyPlayer.setDataSource(this, setDataSourceUri);
+            steadyPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+            steadyPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                @Override
+                public void onPrepared(MediaPlayer mediaPlayer) {
+                    steadyPlayer.start();
+                }
+            });
+            putUpPlayer.reset();
+            setDataSourceUri = Uri.parse("android.resource://pitt.edu.danious.myotester/" + R.raw.putup_voice);
+            putUpPlayer.setDataSource(this, setDataSourceUri);
+            putUpPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+            putUpPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                @Override
+                public void onPrepared(MediaPlayer mediaPlayer) {
+                    putUpPlayer.start();
+                }
+            });
+            holdPlayer.reset();
+            setDataSourceUri = Uri.parse("android.resource://pitt.edu.danious.myotester/" + R.raw.hold_voice);
+            holdPlayer.setDataSource(this, setDataSourceUri);
+            holdPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+            holdPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                @Override
+                public void onPrepared(MediaPlayer mediaPlayer) {
+                    holdPlayer.start();
+                }
+            });
+            putDownPlayer.reset();
+            setDataSourceUri = Uri.parse("android.resource://pitt.edu.danious.myotester/" + R.raw.putdown_voice);
+            putDownPlayer.setDataSource(this, setDataSourceUri);
+            putDownPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+            putDownPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                @Override
+                public void onPrepared(MediaPlayer mediaPlayer) {
+                    putDownPlayer.start();
+                }
+            });
+            relaxPlayer.reset();
+            setDataSourceUri = Uri.parse("android.resource://pitt.edu.danious.myotester/" + R.raw.relax_voice);
+            relaxPlayer.setDataSource(this, setDataSourceUri);
+            relaxPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+            relaxPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                @Override
+                public void onPrepared(MediaPlayer mediaPlayer) {
+                    relaxPlayer.start();
+                }
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }*/
+    //endregion
 
     //Called when press test-run button
     public void singleProcess(View view){
@@ -167,7 +235,14 @@ public class WorkoutActivity extends AppCompatActivity {
             workoutCnt = -1;
         }
         // This section runs every workout
-        player.stop();
+        if (player.isPlaying()) {
+            player.stop();
+        }
+//        steadyPlayer.stop();
+//        putUpPlayer.stop();
+//        holdPlayer.stop();
+//        putDownPlayer.stop();
+//        relaxPlayer.stop();
         isRecording = false;
         workoutCnt = workoutCnt + 1;
         tv_count.setText(Integer.toString(workoutCnt));
@@ -255,6 +330,15 @@ public class WorkoutActivity extends AppCompatActivity {
         }
     }
 
+    private void progressBarTimer(int barSec){
+        timer1 = new Timer();
+        timer2 = new Timer();
+        timer3 = new Timer();
+        timer1.schedule(new stepBar(), 0, 100);
+        timer2.schedule(new stepNumber(),1000, 1000); // update number 1s
+        timer3.schedule(new stepNext(),sec*1000+100); // enter next step
+    }
+
     /* Protocol steps */
     private void steadyStep(){
         sec = 3;
@@ -262,13 +346,10 @@ public class WorkoutActivity extends AppCompatActivity {
         tv_step.setText(this.getString(R.string.protoSteady));
         pb.setMax(sec*10);
         pb.setProgress(0);
-//        startMeasure();
-        timer1 = new Timer();
-        timer2 = new Timer();
-        timer3 = new Timer();
-        timer1.schedule(new stepBar(), 0, 100);
-        timer2.schedule(new stepNumber(),1000, 1000); // update number 1s
-        timer3.schedule(new stepNext(),sec*1000+100); // enter next step 5s
+        progressBarTimer(sec);
+        voicePlayer = MediaPlayer.create(this, R.raw.steady_voice);
+        voicePlayer.start();
+//        steadyPlayer.prepareAsync();
     }
 
     private void putUpStep(){
@@ -278,12 +359,10 @@ public class WorkoutActivity extends AppCompatActivity {
         tv_step.setText(this.getString(R.string.protoUp));
         pb.setMax(sec*10);
         pb.setProgress(0);
-        timer1 = new Timer();
-        timer2 = new Timer();
-        timer3 = new Timer();
-        timer1.schedule(new stepBar(), 0, 100);
-        timer2.schedule(new stepNumber(),1000, 1000); // update number 1s
-        timer3.schedule(new stepNext(),sec*1000+100); // enter next step 5s
+        progressBarTimer(sec);
+        voicePlayer = MediaPlayer.create(this, R.raw.putup_voice);
+        voicePlayer.start();
+//        putUpPlayer.prepareAsync();
     }
 
     private void holdStep(){
@@ -292,12 +371,10 @@ public class WorkoutActivity extends AppCompatActivity {
         tv_step.setText(this.getString(R.string.protoHold));
         pb.setMax(sec*10);
         pb.setProgress(0);
-        timer1 = new Timer();
-        timer2 = new Timer();
-        timer3 = new Timer();
-        timer1.schedule(new stepBar(), 0, 100);
-        timer2.schedule(new stepNumber(),1000, 1000); // update number 1s
-        timer3.schedule(new stepNext(),sec*1000+100); // enter next step 5s
+        progressBarTimer(sec);
+        voicePlayer = MediaPlayer.create(this, R.raw.hold_voice);
+        voicePlayer.start();
+//        holdPlayer.prepareAsync();
     }
 
     private void putDownStep(){
@@ -306,12 +383,10 @@ public class WorkoutActivity extends AppCompatActivity {
         tv_step.setText(this.getString(R.string.protoDown));
         pb.setMax(sec*10);
         pb.setProgress(0);
-        timer1 = new Timer();
-        timer2 = new Timer();
-        timer3 = new Timer();
-        timer1.schedule(new stepBar(), 0, 100);
-        timer2.schedule(new stepNumber(),1000, 1000); // update number 1s
-        timer3.schedule(new stepNext(),sec*1000+100); // enter next step 5s
+        progressBarTimer(sec);
+        voicePlayer = MediaPlayer.create(this, R.raw.putdown_voice);
+        voicePlayer.start();
+//        putDownPlayer.prepareAsync();
     }
 
     private void relaxStep(){
@@ -320,12 +395,10 @@ public class WorkoutActivity extends AppCompatActivity {
         tv_step.setText(this.getString(R.string.protoRelax));
         pb.setMax(sec*10);
         pb.setProgress(0);
-        timer1 = new Timer();
-        timer2 = new Timer();
-        timer3 = new Timer();
-        timer1.schedule(new stepBar(), 0, 100);
-        timer2.schedule(new stepNumber(),1000, 1000); // update number 1s
-        timer3.schedule(new stepNext(),sec*1000+100); // enter next step 5s
+        progressBarTimer(sec);
+        voicePlayer = MediaPlayer.create(this, R.raw.relax_voice);
+        voicePlayer.start();
+//        relaxPlayer.prepareAsync();
     }
 
     /* Recording Thread */
