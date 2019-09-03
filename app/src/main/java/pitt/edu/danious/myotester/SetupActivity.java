@@ -79,6 +79,7 @@ public class SetupActivity extends AppCompatActivity {
         SimpleDateFormat dateFormat = new SimpleDateFormat("MMddyyyy");
         String currentDate = dateFormat.format(date);
         folderName = et_name.getText().toString() + "-" + currentDate + "-" +
+                et_weight.getText().toString() + "p-" +
                 (String)sp_arm.getSelectedItem() + "-G" + (String)sp_group.getSelectedItem();
         //create the folder
         File folder = new File(savedPath + '/' + folderName);
