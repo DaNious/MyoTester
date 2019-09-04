@@ -25,4 +25,8 @@
     <string name="armLabel">Arm</string>>
     <string name="groupLabel">Group #</string>>
     <string name="weightLabel">Dumbbell (lbs.)</string>>
+    <string name="textResults">You\'re done for this group!\nPlease relax for a while</string>
+    >
+    <string name="textResultsDone">You\'re done for all groups!</string>>
+    <string name="textReminder">Please come back for next group at:</string>>
 </resources>

@@ -239,6 +239,10 @@ public class WorkoutActivity extends AppCompatActivity {
             if (!isSingle) {
                 tv_savedCount.setText(this.getString(R.string.savedWorkoutCount) +
                         "  " + Integer.toString(workoutCnt + 1));
+                // Finish a group, proceed to the results
+                Intent intent = new Intent(this, ResultsActivity.class);
+                intent.putExtra("extra_data", folderName.substring(folderName.length() - 1));
+                startActivity(intent);
             }
             else {
                 tv_savedCount.setText("");
