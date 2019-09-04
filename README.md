@@ -10,3 +10,8 @@ Add a information page, the app save the information as folder name and store th
 Add voice instructions(but in very small volume)
 
 Add the results page with time reminder of next group
+
+# v0.2
+Instead of saving only 1 record per workout, we save 5 corresponding to 5 steps
+of the workout. This could resolve the volume issue by playing intermittently
+with both speakers

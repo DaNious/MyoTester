@@ -35,13 +35,13 @@ import java.util.TimerTask;
 public class WorkoutActivity extends AppCompatActivity {
 
     MediaPlayer player = new MediaPlayer();
-    MediaPlayer voicePlayer = new MediaPlayer();
-//    MediaPlayer steadyPlayer = new MediaPlayer();
-//    MediaPlayer putUpPlayer = new MediaPlayer();
-//    MediaPlayer holdPlayer = new MediaPlayer();
-//    MediaPlayer putDownPlayer = new MediaPlayer();
-//    MediaPlayer relaxPlayer = new MediaPlayer();
-    private Timer timer1, timer2, timer3;
+//    MediaPlayer voicePlayer = new MediaPlayer();
+    MediaPlayer steadyPlayer = new MediaPlayer();
+    MediaPlayer putUpPlayer = new MediaPlayer();
+    MediaPlayer holdPlayer = new MediaPlayer();
+    MediaPlayer putDownPlayer = new MediaPlayer();
+    MediaPlayer relaxPlayer = new MediaPlayer();
+    private Timer timer1, timer2, timer3, voiceTimer;
     private File file;
     // UI controls
     private ProgressBar pb;
@@ -49,12 +49,14 @@ public class WorkoutActivity extends AppCompatActivity {
     private Button btn_start, btn_stop, btn_testRun;
     // Variables
     private int sec = 0;
+    private double secVoice = 2;
     private int stepIndex = 0;
     private boolean isAuto = false;
     private boolean isSingle = false;
     private boolean isRecording = false;
     private int workoutCnt = 0;
     public static final String TAG = "Record Thread";
+    public static final int PROCESS_TIME = 26;      // Protocol time + 5 * 2 (Voice Instruction Waiting Time) + 1
     private String folderName;
 
     @Override
@@ -99,10 +101,9 @@ public class WorkoutActivity extends AppCompatActivity {
         }
 
         //Initialize all voice instruction players
-        //initVoicePlayers();
+        initVoicePlayers();
     }
     //region Use prepareAsync for instruction voices
-    /*
     public void initVoicePlayers(){
         try {
             steadyPlayer.reset();
@@ -122,6 +123,9 @@ public class WorkoutActivity extends AppCompatActivity {
             putUpPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                 @Override
                 public void onPrepared(MediaPlayer mediaPlayer) {
+                    if (player.isPlaying() || !isSingle) {          //Stop the ultrasonic player after the instruction player is ready
+                        player.stop();
+                    }
                     putUpPlayer.start();
                 }
             });
@@ -132,6 +136,9 @@ public class WorkoutActivity extends AppCompatActivity {
             holdPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                 @Override
                 public void onPrepared(MediaPlayer mediaPlayer) {
+                    if (player.isPlaying() || !isSingle) {
+                        player.stop();
+                    }
                     holdPlayer.start();
                 }
             });
@@ -142,6 +149,9 @@ public class WorkoutActivity extends AppCompatActivity {
             putDownPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                 @Override
                 public void onPrepared(MediaPlayer mediaPlayer) {
+                    if (player.isPlaying() || !isSingle) {
+                        player.stop();
+                    }
                     putDownPlayer.start();
                 }
             });
@@ -152,13 +162,16 @@ public class WorkoutActivity extends AppCompatActivity {
             relaxPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                 @Override
                 public void onPrepared(MediaPlayer mediaPlayer) {
+                    if (player.isPlaying() || !isSingle) {
+                        player.stop();
+                    }
                     relaxPlayer.start();
                 }
             });
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }*/
+    }
     //endregion
 
     //Called when press test-run button
@@ -169,19 +182,23 @@ public class WorkoutActivity extends AppCompatActivity {
         tv_instr.setText(this.getString(R.string.testRunMessage));
         isSingle = true;
         isAuto = false;
-        steadyStep();
+//        steadyStep();
+        steadyVoice();
     }
 
     public void autoProcessFunc(){
-        playAndRecord();
-        steadyStep();
+//        playAndRecord();
+//        steadyStep();
+        steadyVoice();
     }
 
-    public void playAndRecord(){
+    public void playAndRecord(String stepFolderName){
         Date date = new Date();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
         file = new File(Environment.getExternalStorageDirectory().getAbsolutePath()
-                        + "/DriveSyncFiles/" + folderName + "/musclePCM_" + dateFormat.format(date) + ".pcm");
+                        + "/DriveSyncFiles/" + folderName + "/" + stepFolderName
+                        + "/" + String.valueOf(workoutCnt + 1) + "_musclePCM_" + dateFormat.format(date)
+                        + ".pcm");
         Log.i(TAG,"生成文件");
         Thread recordThread = new Thread(new Runnable() {
             @Override
@@ -217,7 +234,7 @@ public class WorkoutActivity extends AppCompatActivity {
                         }
                     });
                     try {
-                        Thread.sleep(16000);
+                        Thread.sleep(PROCESS_TIME*1000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -250,14 +267,12 @@ public class WorkoutActivity extends AppCompatActivity {
             workoutCnt = -1;
         }
         // This section runs every workout
-        if (player.isPlaying()) {
-            player.stop();
+        if (!isSingle) {
+            if (player.isPlaying()) {
+                player.stop();
+            }
         }
-//        steadyPlayer.stop();
-//        putUpPlayer.stop();
-//        holdPlayer.stop();
-//        putDownPlayer.stop();
-//        relaxPlayer.stop();
+        relaxPlayer.stop();
         isRecording = false;
         workoutCnt = workoutCnt + 1;
         tv_count.setText(Integer.toString(workoutCnt));
@@ -294,23 +309,45 @@ public class WorkoutActivity extends AppCompatActivity {
                     countDown();
                     break;
                 case 3:
-                    timer1.cancel();
-                    timer2.cancel();
-                    timer3.cancel();
                     switch (msg.arg1){
                         case 1:
-                            putUpStep();
+                            voiceTimer.cancel();
+                            steadyStep();
                             break;
                         case 2:
-                            holdStep();
+                            progressBarTimerCancel();
+                            putUpVoice();
                             break;
                         case 3:
-                            putDownStep();
+                            voiceTimer.cancel();
+                            putUpStep();
                             break;
                         case 4:
-                            relaxStep();
+                            progressBarTimerCancel();
+                            holdVoice();
                             break;
                         case 5:
+                            voiceTimer.cancel();
+                            holdStep();
+                            break;
+                        case 6:
+                            progressBarTimerCancel();
+                            putDownVoice();
+                            break;
+                        case 7:
+                            voiceTimer.cancel();
+                            putDownStep();
+                            break;
+                        case 8:
+                            progressBarTimerCancel();
+                            relaxVoice();
+                            break;
+                        case 9:
+                            voiceTimer.cancel();
+                            relaxStep();
+                            break;
+                        case 10:
+                            progressBarTimerCancel();
                             endProcess();
                             break;
                     }
@@ -356,63 +393,169 @@ public class WorkoutActivity extends AppCompatActivity {
         timer3.schedule(new stepNext(),sec*1000+100); // enter next step
     }
 
+    private void progressBarTimerCancel(){
+        timer1.cancel();
+        timer2.cancel();
+        timer3.cancel();
+    }
+
     /* Protocol steps */
-    private void steadyStep(){
-        voicePlayer = MediaPlayer.create(this, R.raw.steady_voice);
-        voicePlayer.start();
+    // Step 1
+    private void steadyVoice(){
         sec = 3;
+        steadyPlayer.prepareAsync();
         tv_countDown.setText(Integer.toString(sec) + "s");
         tv_step.setText(this.getString(R.string.protoSteady));
         pb.setMax(sec*10);
         pb.setProgress(0);
+        voiceTimer = new Timer();
+        voiceTimer.schedule(new stepNext(), (int)secVoice*1000);
+    }
+
+    // Step 2
+    private void steadyStep(){
+//        voicePlayer = MediaPlayer.create(this, R.raw.steady_voice);
+//        voicePlayer.start();
+//        sec = 3;
+//        tv_countDown.setText(Integer.toString(sec) + "s");
+//        tv_step.setText(this.getString(R.string.protoSteady));
+//        pb.setMax(sec*10);
+//        pb.setProgress(0);
+        steadyPlayer.stop();
+        if (!isSingle) {
+            playAndRecord("/1Steady");
+        }
         progressBarTimer(sec);
 //        steadyPlayer.prepareAsync();
     }
 
-    private void putUpStep(){
-        voicePlayer = MediaPlayer.create(this, R.raw.putup_voice);
-        voicePlayer.start();
+    // Step 3
+    private void putUpVoice(){
+//        if (player.isPlaying() || !isSingle) {
+//            player.stop();
+//        }
+        isRecording = false;
         sec = 2;
+        putUpPlayer.prepareAsync();
         tv_countDown.setText(Integer.toString(sec) + "s");
         tv_step.setText(this.getString(R.string.protoUp));
         pb.setMax(sec*10);
         pb.setProgress(0);
+        voiceTimer = new Timer();
+        voiceTimer.schedule(new stepNext(), (int)secVoice*1000);
+    }
+
+    // Step 4
+    private void putUpStep(){
+//        voicePlayer = MediaPlayer.create(this, R.raw.putup_voice);
+//        voicePlayer.start();
+//        sec = 2;
+//        tv_countDown.setText(Integer.toString(sec) + "s");
+//        tv_step.setText(this.getString(R.string.protoUp));
+//        pb.setMax(sec*10);
+//        pb.setProgress(0);
+        putUpPlayer.stop();
+        if (!isSingle) {
+            playAndRecord("/2PutUp");
+        }
         progressBarTimer(sec);
 //        putUpPlayer.prepareAsync();
     }
 
-    private void holdStep(){
-        voicePlayer = MediaPlayer.create(this, R.raw.hold_voice);
-        voicePlayer.start();
+    // Step 5
+    private void holdVoice(){
+//        if (player.isPlaying() || !isSingle) {
+//            player.stop();
+//        }
+        isRecording = false;
         sec = 3;
+        holdPlayer.prepareAsync();
         tv_countDown.setText(Integer.toString(sec) + "s");
         tv_step.setText(this.getString(R.string.protoHold));
         pb.setMax(sec*10);
         pb.setProgress(0);
+        voiceTimer = new Timer();
+        voiceTimer.schedule(new stepNext(), (int)secVoice*1000);
+    }
+
+    // Step 6
+    private void holdStep(){
+//        voicePlayer = MediaPlayer.create(this, R.raw.hold_voice);
+//        voicePlayer.start();
+//        sec = 3;
+//        tv_countDown.setText(Integer.toString(sec) + "s");
+//        tv_step.setText(this.getString(R.string.protoHold));
+//        pb.setMax(sec*10);
+//        pb.setProgress(0);
+        holdPlayer.stop();
+        if (!isSingle) {
+            playAndRecord("/3Hold");
+        }
         progressBarTimer(sec);
 //        holdPlayer.prepareAsync();
     }
 
-    private void putDownStep(){
-        voicePlayer = MediaPlayer.create(this, R.raw.putdown_voice);
-        voicePlayer.start();
+    // Step 7
+    private void putDownVoice(){
+//        if (player.isPlaying() || !isSingle) {
+//            player.stop();
+//        }
+        isRecording = false;
         sec = 2;
+        putDownPlayer.prepareAsync();
         tv_countDown.setText(Integer.toString(sec) + "s");
         tv_step.setText(this.getString(R.string.protoDown));
         pb.setMax(sec*10);
         pb.setProgress(0);
+        voiceTimer = new Timer();
+        voiceTimer.schedule(new stepNext(), (int)secVoice*1000);
+    }
+
+    // Step 8
+    private void putDownStep(){
+//        voicePlayer = MediaPlayer.create(this, R.raw.putdown_voice);
+//        voicePlayer.start();
+//        sec = 2;
+//        tv_countDown.setText(Integer.toString(sec) + "s");
+//        tv_step.setText(this.getString(R.string.protoDown));
+//        pb.setMax(sec*10);
+//        pb.setProgress(0);
+        putDownPlayer.stop();
+        if (!isSingle) {
+            playAndRecord("/4PutDown");
+        }
         progressBarTimer(sec);
 //        putDownPlayer.prepareAsync();
     }
 
-    private void relaxStep(){
-        voicePlayer = MediaPlayer.create(this, R.raw.relax_voice);
-        voicePlayer.start();
+    // Step 9
+    private void relaxVoice(){
+//        if (player.isPlaying() || !isSingle) {
+//            player.stop();
+//        }
+        isRecording = false;
         sec = 5;
+        relaxPlayer.prepareAsync();
         tv_countDown.setText(Integer.toString(sec) + "s");
         tv_step.setText(this.getString(R.string.protoRelax));
         pb.setMax(sec*10);
         pb.setProgress(0);
+        voiceTimer = new Timer();
+        voiceTimer.schedule(new stepNext(), (int)secVoice*1000);
+    }
+
+    private void relaxStep(){
+//        voicePlayer = MediaPlayer.create(this, R.raw.relax_voice);
+//        voicePlayer.start();
+//        sec = 5;
+//        tv_countDown.setText(Integer.toString(sec) + "s");
+//        tv_step.setText(this.getString(R.string.protoRelax));
+//        pb.setMax(sec*10);
+//        pb.setProgress(0);
+            relaxPlayer.stop();
+        if (!isSingle) {
+            playAndRecord("/5Relax");
+        }
         progressBarTimer(sec);
 //        relaxPlayer.prepareAsync();
     }

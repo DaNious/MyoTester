@@ -85,12 +85,36 @@ public class SetupActivity extends AppCompatActivity {
         File folder = new File(savedPath + '/' + folderName);
         if (!folder.exists()) {
             folder.mkdir();
+            // create subfolders
+            if (!createSubFolders(savedPath + '/' + folderName + '/')){
+                Toast.makeText(this, "Subfolders exist, PLEASE check the info", Toast.LENGTH_LONG).show();
+                return false;
+            }
             return true;
         }
         else {
             Toast.makeText(this, "Folder exists, PLEASE check the info", Toast.LENGTH_LONG).show();
             return false;
         }
+    }
+
+    private boolean createSubFolders(String folderPath){
+        File steadyFolder = new File(folderPath + "/1Steady");
+        File putUpFolder = new File(folderPath + "/2PutUp");
+        File holdFolder = new File(folderPath + "/3Hold");
+        File putDownFolder = new File(folderPath + "/4PutDown");
+        File relaxFolder = new File(folderPath + "/5Relax");
+        if (!steadyFolder.exists() && !putUpFolder.exists() && !holdFolder.exists()
+                && !putDownFolder.exists() && !relaxFolder.exists()){
+            steadyFolder.mkdir();
+            putUpFolder.mkdir();
+            holdFolder.mkdir();
+            putDownFolder.mkdir();
+            relaxFolder.mkdir();
+            return true;
+        }
+        else
+            return false;
     }
 
     //called when user confirm the information
