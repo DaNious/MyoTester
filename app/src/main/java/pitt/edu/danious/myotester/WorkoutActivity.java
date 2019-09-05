@@ -1,6 +1,7 @@
 package pitt.edu.danious.myotester;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import android.content.Context;
 import android.content.Intent;
@@ -16,6 +17,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -84,6 +86,13 @@ public class WorkoutActivity extends AppCompatActivity {
         btn_testRun = (Button) findViewById(R.id.btn_testRun);
         btn_testRun.setEnabled(true);
 
+        //Make the volume maximum
+        AudioManager amr = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        int maxVoiceCall = amr.getStreamMaxVolume(AudioManager.STREAM_VOICE_CALL);
+        amr.setStreamVolume(AudioManager.STREAM_VOICE_CALL, maxVoiceCall, 0);
+        int maxMusic = amr.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+        amr.setStreamVolume(AudioManager.STREAM_MUSIC, maxMusic, 0);
+
         //Initialize media player
         try {
             player.reset();
@@ -93,6 +102,7 @@ public class WorkoutActivity extends AppCompatActivity {
             player.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                 @Override
                 public void onPrepared(MediaPlayer mediaPlayer) {
+//                    player.setVolume(1.0f, 1.0f);
                     player.start();
                 }
             });
@@ -103,6 +113,32 @@ public class WorkoutActivity extends AppCompatActivity {
         //Initialize all voice instruction players
         initVoicePlayers();
     }
+
+    //Replace the functionality of volume up and down button
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        int action = event.getAction();
+        int keyCode = event.getKeyCode();
+        switch (keyCode){
+            case KeyEvent.KEYCODE_VOLUME_UP:
+                if (action == KeyEvent.ACTION_DOWN){
+                    if (btn_start.isEnabled()) {
+                        btn_start.performClick();   //need to check whether it's enabled
+                    }
+                }
+                return true;
+                case KeyEvent.KEYCODE_VOLUME_DOWN:
+                    if (action == KeyEvent.ACTION_DOWN){
+                        if (btn_stop.isEnabled()) {
+                            btn_stop.performClick();
+                        }
+                    }
+                    return true;
+                    default:
+                        return super.dispatchKeyEvent(event);
+        }
+    }
+
     //region Use prepareAsync for instruction voices
     public void initVoicePlayers(){
         try {
@@ -113,6 +149,7 @@ public class WorkoutActivity extends AppCompatActivity {
             steadyPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                 @Override
                 public void onPrepared(MediaPlayer mediaPlayer) {
+//                    steadyPlayer.setVolume(1.0f, 1.0f);
                     steadyPlayer.start();
                 }
             });
@@ -126,6 +163,7 @@ public class WorkoutActivity extends AppCompatActivity {
                     if (player.isPlaying() || !isSingle) {          //Stop the ultrasonic player after the instruction player is ready
                         player.stop();
                     }
+//                    putUpPlayer.setVolume(1.0f, 1.0f);
                     putUpPlayer.start();
                 }
             });
@@ -139,6 +177,7 @@ public class WorkoutActivity extends AppCompatActivity {
                     if (player.isPlaying() || !isSingle) {
                         player.stop();
                     }
+//                    holdPlayer.setVolume(1.0f, 1.0f);
                     holdPlayer.start();
                 }
             });
@@ -152,6 +191,7 @@ public class WorkoutActivity extends AppCompatActivity {
                     if (player.isPlaying() || !isSingle) {
                         player.stop();
                     }
+//                    putDownPlayer.setVolume(1.0f, 1.0f);
                     putDownPlayer.start();
                 }
             });
@@ -165,6 +205,7 @@ public class WorkoutActivity extends AppCompatActivity {
                     if (player.isPlaying() || !isSingle) {
                         player.stop();
                     }
+//                    relaxPlayer.setVolume(1.0f, 1.0f);
                     relaxPlayer.start();
                 }
             });
