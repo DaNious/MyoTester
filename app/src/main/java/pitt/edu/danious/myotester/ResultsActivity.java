@@ -14,10 +14,11 @@ import java.util.Date;
 public class ResultsActivity extends AppCompatActivity {
 
     // UI controls
-    private TextView tv_resultsLabel, tv_reminder, tv_remindTime;
+    private TextView tv_resultsLabel, tv_reminder, tv_remindTime, tv_workoutCnt;
 
     // Variables
     private String groupDone;
+    private String workoutCnt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,10 +27,13 @@ public class ResultsActivity extends AppCompatActivity {
 
         Intent setupIntent = getIntent();
         groupDone = setupIntent.getStringExtra("extra_data");
+        workoutCnt = setupIntent.getStringExtra("workoutCnt");
 
         tv_resultsLabel = (TextView) findViewById(R.id.tv_resultsLabel);
         tv_reminder = (TextView) findViewById(R.id.tv_reminderLabel);
         tv_remindTime = (TextView) findViewById(R.id.tv_remindTime);
+        tv_workoutCnt = (TextView) findViewById(R.id.tv_workoutCnt);
+        tv_workoutCnt.setText(workoutCnt);
 
         if (groupDone.equals("3")) {
             tv_resultsLabel.setText(R.string.textResultsDone);
@@ -46,5 +50,12 @@ public class ResultsActivity extends AppCompatActivity {
             tv_remindTime.setText(currentTime);
             //TODO: add setting the system alarm function
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+        finish();
     }
 }

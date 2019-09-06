@@ -1,9 +1,11 @@
 package pitt.edu.danious.myotester;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.AudioFormat;
 import android.media.AudioManager;
@@ -34,16 +36,19 @@ import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import javax.net.ssl.HandshakeCompletedListener;
+
 public class WorkoutActivity extends AppCompatActivity {
 
     MediaPlayer player = new MediaPlayer();
 //    MediaPlayer voicePlayer = new MediaPlayer();
+    MediaPlayer preCountDownPlayer = new MediaPlayer();
     MediaPlayer steadyPlayer = new MediaPlayer();
     MediaPlayer putUpPlayer = new MediaPlayer();
     MediaPlayer holdPlayer = new MediaPlayer();
     MediaPlayer putDownPlayer = new MediaPlayer();
     MediaPlayer relaxPlayer = new MediaPlayer();
-    private Timer timer1, timer2, timer3, voiceTimer;
+    private Timer timer1, timer2, timer3, voiceTimer, preVoiceTimer;
     private File file;
     // UI controls
     private ProgressBar pb;
@@ -59,6 +64,8 @@ public class WorkoutActivity extends AppCompatActivity {
     private int workoutCnt = 0;
     public static final String TAG = "Record Thread";
     public static final int PROCESS_TIME = 26;      // Protocol time + 5 * 2 (Voice Instruction Waiting Time) + 1
+    public static final int PRECOUNTDOWN = 8;
+    public static final int PROCESS_TIME_1ST = PROCESS_TIME + PRECOUNTDOWN;
     private String folderName;
 
     @Override
@@ -142,13 +149,26 @@ public class WorkoutActivity extends AppCompatActivity {
     //region Use prepareAsync for instruction voices
     public void initVoicePlayers(){
         try {
+            preCountDownPlayer.reset();
+            Uri setDataSourceUri = Uri.parse("android.resource://pitt.edu.danious.myotester/" + R.raw.countdown_voice);
+            preCountDownPlayer.setDataSource(this, setDataSourceUri);
+            preCountDownPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+            preCountDownPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                @Override
+                public void onPrepared(MediaPlayer mediaPlayer) {
+                    preCountDownPlayer.start();
+                }
+            });
             steadyPlayer.reset();
-            Uri setDataSourceUri = Uri.parse("android.resource://pitt.edu.danious.myotester/" + R.raw.steady_voice);
+            setDataSourceUri = Uri.parse("android.resource://pitt.edu.danious.myotester/" + R.raw.steady_voice);
             steadyPlayer.setDataSource(this, setDataSourceUri);
             steadyPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
             steadyPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                 @Override
                 public void onPrepared(MediaPlayer mediaPlayer) {
+//                    if (preCountDownPlayer.isPlaying()) {
+//                        preCountDownPlayer.stop();
+//                    }
 //                    steadyPlayer.setVolume(1.0f, 1.0f);
                     steadyPlayer.start();
                 }
@@ -224,13 +244,19 @@ public class WorkoutActivity extends AppCompatActivity {
         isSingle = true;
         isAuto = false;
 //        steadyStep();
+        stepIndex = 1;
         steadyVoice();
     }
 
     public void autoProcessFunc(){
 //        playAndRecord();
 //        steadyStep();
-        steadyVoice();
+//        steadyVoice();
+        if (workoutCnt == 0) {  //if this is doing the first workout
+            preCountDownVoice();
+        } else {
+            steadyVoice();
+        }
     }
 
     public void playAndRecord(String stepFolderName){
@@ -275,7 +301,11 @@ public class WorkoutActivity extends AppCompatActivity {
                         }
                     });
                     try {
-                        Thread.sleep(PROCESS_TIME*1000);
+                        if (workoutCnt == 0) {  //if this is doing the first workout
+                            Thread.sleep(PROCESS_TIME_1ST*1000);
+                        } else {
+                            Thread.sleep(PROCESS_TIME*1000);
+                        }
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -300,7 +330,9 @@ public class WorkoutActivity extends AppCompatActivity {
                 // Finish a group, proceed to the results
                 Intent intent = new Intent(this, ResultsActivity.class);
                 intent.putExtra("extra_data", folderName.substring(folderName.length() - 1));
+                intent.putExtra("workoutCnt", Integer.toString(workoutCnt + 1));
                 startActivity(intent);
+                finish();
             }
             else {
                 tv_savedCount.setText("");
@@ -319,7 +351,10 @@ public class WorkoutActivity extends AppCompatActivity {
         tv_count.setText(Integer.toString(workoutCnt));
         tv_countDown.setText("");
         pb.setProgress(0);
-        stepIndex = 0;
+        if(!isSingle)
+            stepIndex = 1;
+        else
+            stepIndex = 0;
     }
 
     public void terminateTest(View view){
@@ -339,6 +374,7 @@ public class WorkoutActivity extends AppCompatActivity {
         tv_countDown.setText(Integer.toString(sec) + "s");
     }
 
+    //Step voices handler
     private Handler stepHandler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
@@ -352,42 +388,46 @@ public class WorkoutActivity extends AppCompatActivity {
                 case 3:
                     switch (msg.arg1){
                         case 1:
+                            preVoiceTimer.cancel();
+                            steadyVoice();
+                            break;
+                        case 2:
                             voiceTimer.cancel();
                             steadyStep();
                             break;
-                        case 2:
+                        case 3:
                             progressBarTimerCancel();
                             putUpVoice();
                             break;
-                        case 3:
+                        case 4:
                             voiceTimer.cancel();
                             putUpStep();
                             break;
-                        case 4:
+                        case 5:
                             progressBarTimerCancel();
                             holdVoice();
                             break;
-                        case 5:
+                        case 6:
                             voiceTimer.cancel();
                             holdStep();
                             break;
-                        case 6:
+                        case 7:
                             progressBarTimerCancel();
                             putDownVoice();
                             break;
-                        case 7:
+                        case 8:
                             voiceTimer.cancel();
                             putDownStep();
                             break;
-                        case 8:
+                        case 9:
                             progressBarTimerCancel();
                             relaxVoice();
                             break;
-                        case 9:
+                        case 10:
                             voiceTimer.cancel();
                             relaxStep();
                             break;
-                        case 10:
+                        case 11:
                             progressBarTimerCancel();
                             endProcess();
                             break;
@@ -397,7 +437,7 @@ public class WorkoutActivity extends AppCompatActivity {
         }
     };
 
-    // Tasks
+    // Step Timer Tasks
     private class stepBar extends TimerTask{
         @Override
         public void run() {
@@ -441,8 +481,16 @@ public class WorkoutActivity extends AppCompatActivity {
     }
 
     /* Protocol steps */
+    //
+    private void preCountDownVoice(){
+        preCountDownPlayer.prepareAsync();
+        preVoiceTimer = new Timer();
+        preVoiceTimer.schedule(new stepNext(), PRECOUNTDOWN*1000);
+    }
+
     // Step 1
     private void steadyVoice(){
+//        preCountDownPlayer.stop();      //if user return from results page, a bug may happen here
         sec = 3;
         steadyPlayer.prepareAsync();
         tv_countDown.setText(Integer.toString(sec) + "s");

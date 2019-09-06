@@ -7,6 +7,31 @@
     tools:context=".ResultsActivity">
 
     <TextView
+        android:id="@+id/tv_workoutCntLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:gravity="center"
+        android:text="@string/workoutCntLabel"
+        android:textColor="#000000"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_workoutCnt" />
+
+    <TextView
+        android:id="@+id/tv_workoutCnt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="64dp"
+        android:textColor="#E91E63"
+        android:textSize="36sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_resultsLabel" />
+
+    <TextView
         android:id="@+id/tv_remindTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -29,7 +54,7 @@
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_resultsLabel" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_workoutCntLabel" />
 
     <TextView
         android:id="@+id/tv_resultsLabel"

@@ -20,3 +20,7 @@ The global volume will be set max during the workout activity
 
 The physical volume up and down button now can also flag the start and stop 
 of the test
+
+Add a warm-up count down at each time of hitting the start button
+
+If the use press back at the results page, it will back to the main page

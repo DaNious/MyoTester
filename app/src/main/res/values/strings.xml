@@ -29,4 +29,5 @@
     >
     <string name="textResultsDone">You\'re done for all groups!</string>>
     <string name="textReminder">Please come back for next group at:</string>>
+    <string name="workoutCntLabel">workouts were made this time!</string>>
 </resources>
