@@ -24,3 +24,6 @@ of the test
 Add a warm-up count down at each time of hitting the start button
 
 If the use press back at the results page, it will back to the main page
+
+After each group, it will ask whether you want to keep the last workout
+(as it can be badly done)

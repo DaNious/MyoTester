@@ -153,10 +153,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:layout_marginLeft="10dp"
         android:layout_marginStart="10dp"
         android:textColor="#009688"
         android:textSize="18sp"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/tv_count_label"
         app:layout_constraintStart_toStartOf="@+id/tv_count_label" />
 

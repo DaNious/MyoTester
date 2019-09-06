@@ -67,6 +67,7 @@ public class WorkoutActivity extends AppCompatActivity {
     public static final int PRECOUNTDOWN = 8;
     public static final int PROCESS_TIME_1ST = PROCESS_TIME + PRECOUNTDOWN;
     private String folderName;
+    private String lastSteadyFilePath, lastPutUpFilePath, lastHoldFilePath, lastPutDownFilePath, lastRelaxFilePath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -266,6 +267,23 @@ public class WorkoutActivity extends AppCompatActivity {
                         + "/DriveSyncFiles/" + folderName + "/" + stepFolderName
                         + "/" + String.valueOf(workoutCnt + 1) + "_musclePCM_" + dateFormat.format(date)
                         + ".pcm");
+        switch (stepFolderName){
+            case "/1Steady":
+                lastSteadyFilePath = file.getAbsolutePath();
+                break;
+            case "/2PutUp":
+                lastPutUpFilePath = file.getAbsolutePath();
+                break;
+            case "/3Hold":
+                lastHoldFilePath = file.getAbsolutePath();
+                break;
+            case "/4PutDown":
+                lastPutDownFilePath = file.getAbsolutePath();
+                break;
+            case "/5Relax":
+                lastRelaxFilePath = file.getAbsolutePath();
+                break;
+        }
         Log.i(TAG,"生成文件");
         Thread recordThread = new Thread(new Runnable() {
             @Override
@@ -327,27 +345,69 @@ public class WorkoutActivity extends AppCompatActivity {
             if (!isSingle) {
                 tv_savedCount.setText(this.getString(R.string.savedWorkoutCount) +
                         "  " + Integer.toString(workoutCnt + 1));
-                // Finish a group, proceed to the results
-                Intent intent = new Intent(this, ResultsActivity.class);
-                intent.putExtra("extra_data", folderName.substring(folderName.length() - 1));
-                intent.putExtra("workoutCnt", Integer.toString(workoutCnt + 1));
-                startActivity(intent);
-                finish();
+
+                // Ask whether finish the last workout
+                AlertDialog.Builder adBuilder = new AlertDialog.Builder(this);
+                adBuilder.setMessage("Did you finish the last workout?");
+                adBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                });
+                adBuilder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        File steadyFile = new File(lastSteadyFilePath);
+                        if (steadyFile.exists()){
+                            steadyFile.delete();
+                        }
+                        File putUpFile = new File(lastPutUpFilePath);
+                        if (putUpFile.exists()){
+                            putUpFile.delete();
+                        }
+                        File holdFile = new File(lastHoldFilePath);
+                        if (holdFile.exists()){
+                            holdFile.delete();
+                        }
+                        File putDownFile = new File(lastPutDownFilePath);
+                        if (putDownFile.exists()){
+                            putDownFile.delete();
+                        }
+                        File relaxFile = new File(lastRelaxFilePath);
+                        if (relaxFile.exists()){
+                            relaxFile.delete();
+                        }
+                        workoutCnt = workoutCnt - 1;
+                        dialogInterface.dismiss();
+                    }
+                });
+                AlertDialog dialog = adBuilder.create();
+                dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialogInterface) {
+                        Intent intent = new Intent(getApplicationContext(), ResultsActivity.class);
+                        intent.putExtra("extra_data", folderName.substring(folderName.length() - 1));
+                        intent.putExtra("workoutCnt", Integer.toString(workoutCnt));
+                        startActivity(intent);
+                        finish();
+                    }
+                });
+                dialog.show();
             }
             else {
                 tv_savedCount.setText("");
             }
-            workoutCnt = -1;
         }
         // This section runs every workout
         if (!isSingle) {
             if (player.isPlaying()) {
                 player.stop();
             }
+            workoutCnt = workoutCnt + 1;
         }
         relaxPlayer.stop();
         isRecording = false;
-        workoutCnt = workoutCnt + 1;
         tv_count.setText(Integer.toString(workoutCnt));
         tv_countDown.setText("");
         pb.setProgress(0);
