@@ -3,6 +3,8 @@ package pitt.edu.danious.myotester;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import pl.droidsonroids.gif.GifDrawable;
+import pl.droidsonroids.gif.GifImageView;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -54,6 +56,7 @@ public class WorkoutActivity extends AppCompatActivity {
     private ProgressBar pb;
     private TextView tv_instr, tv_count, tv_step, tv_countDown, tv_stopFlag, tv_savedCount;
     private Button btn_start, btn_stop, btn_testRun;
+    private GifImageView gifImageView;
     // Variables
     private int sec = 0;
     private double secVoice = 2;
@@ -93,6 +96,7 @@ public class WorkoutActivity extends AppCompatActivity {
         btn_stop.setEnabled(false);
         btn_testRun = (Button) findViewById(R.id.btn_testRun);
         btn_testRun.setEnabled(true);
+        gifImageView = (GifImageView) findViewById(R.id.gifImage);
 
         //Make the volume maximum
         AudioManager amr = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
@@ -242,6 +246,7 @@ public class WorkoutActivity extends AppCompatActivity {
         btn_stop.setEnabled(false);
         btn_testRun.setEnabled(false);
         tv_instr.setText(this.getString(R.string.testRunMessage));
+        gifImageView.setVisibility(View.VISIBLE);
         isSingle = true;
         isAuto = false;
 //        steadyStep();
@@ -334,11 +339,12 @@ public class WorkoutActivity extends AppCompatActivity {
     }
 
     public void endProcess(){
-        if (!isAuto) {  // This section only runs after hitting the stop
+        if (!isAuto) {  // This section only runs after hitting the stop or during the single demo run
             btn_start.setEnabled(true);
             btn_stop.setEnabled(false);
             btn_testRun.setEnabled(true);
             tv_instr.setText(this.getString(R.string.textMeasure));
+            gifImageView.setVisibility(View.GONE);
             tv_step.setText(this.getString(R.string.protoWait));
             tv_stopFlag.setText("");
             btn_stop.setText(this.getString(R.string.measureStopButton));
@@ -555,6 +561,14 @@ public class WorkoutActivity extends AppCompatActivity {
         steadyPlayer.prepareAsync();
         tv_countDown.setText(Integer.toString(sec) + "s");
         tv_step.setText(this.getString(R.string.protoSteady));
+        if (isSingle) {
+            try {
+                GifDrawable gifDrawable = new GifDrawable(getResources(), R.drawable.steady);
+                gifImageView.setImageDrawable(gifDrawable);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         pb.setMax(sec*10);
         pb.setProgress(0);
         voiceTimer = new Timer();
@@ -588,6 +602,14 @@ public class WorkoutActivity extends AppCompatActivity {
         putUpPlayer.prepareAsync();
         tv_countDown.setText(Integer.toString(sec) + "s");
         tv_step.setText(this.getString(R.string.protoUp));
+        if (isSingle) {
+            try {
+                GifDrawable gifDrawable = new GifDrawable(getResources(), R.drawable.putup);
+                gifImageView.setImageDrawable(gifDrawable);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         pb.setMax(sec*10);
         pb.setProgress(0);
         voiceTimer = new Timer();
@@ -621,6 +643,14 @@ public class WorkoutActivity extends AppCompatActivity {
         holdPlayer.prepareAsync();
         tv_countDown.setText(Integer.toString(sec) + "s");
         tv_step.setText(this.getString(R.string.protoHold));
+        if (isSingle) {
+            try {
+                GifDrawable gifDrawable = new GifDrawable(getResources(), R.drawable.hold);
+                gifImageView.setImageDrawable(gifDrawable);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         pb.setMax(sec*10);
         pb.setProgress(0);
         voiceTimer = new Timer();
@@ -654,6 +684,14 @@ public class WorkoutActivity extends AppCompatActivity {
         putDownPlayer.prepareAsync();
         tv_countDown.setText(Integer.toString(sec) + "s");
         tv_step.setText(this.getString(R.string.protoDown));
+        if (isSingle) {
+            try {
+                GifDrawable gifDrawable = new GifDrawable(getResources(), R.drawable.putdown);
+                gifImageView.setImageDrawable(gifDrawable);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         pb.setMax(sec*10);
         pb.setProgress(0);
         voiceTimer = new Timer();
@@ -687,6 +725,14 @@ public class WorkoutActivity extends AppCompatActivity {
         relaxPlayer.prepareAsync();
         tv_countDown.setText(Integer.toString(sec) + "s");
         tv_step.setText(this.getString(R.string.protoRelax));
+        if (isSingle) {
+            try {
+                GifDrawable gifDrawable = new GifDrawable(getResources(), R.drawable.relax);
+                gifImageView.setImageDrawable(gifDrawable);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         pb.setMax(sec*10);
         pb.setProgress(0);
         voiceTimer = new Timer();

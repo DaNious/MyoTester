@@ -160,4 +160,12 @@
         app:layout_constraintBottom_toTopOf="@+id/tv_count_label"
         app:layout_constraintStart_toStartOf="@+id/tv_count_label" />
 
+    <pl.droidsonroids.gif.GifImageView
+        android:id="@+id/gifImage"
+        android:layout_width="375dp"
+        android:layout_height="313dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
