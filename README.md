@@ -30,3 +30,7 @@ After each group, it will ask whether you want to keep the last workout
 
 # v0.3
 All functions are done, ready to release
+
+Changes:
+
+1) Add the vibration to notify the stop of test.

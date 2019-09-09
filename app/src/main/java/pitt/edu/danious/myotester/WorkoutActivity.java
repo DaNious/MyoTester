@@ -20,6 +20,8 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -52,6 +54,7 @@ public class WorkoutActivity extends AppCompatActivity {
     MediaPlayer relaxPlayer = new MediaPlayer();
     private Timer timer1, timer2, timer3, voiceTimer, preVoiceTimer;
     private File file;
+    private Vibrator vibrator;
     // UI controls
     private ProgressBar pb;
     private TextView tv_instr, tv_count, tv_step, tv_countDown, tv_stopFlag, tv_savedCount;
@@ -97,6 +100,8 @@ public class WorkoutActivity extends AppCompatActivity {
         btn_testRun = (Button) findViewById(R.id.btn_testRun);
         btn_testRun.setEnabled(true);
         gifImageView = (GifImageView) findViewById(R.id.gifImage);
+
+        vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
 
         //Make the volume maximum
         AudioManager amr = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
@@ -426,10 +431,13 @@ public class WorkoutActivity extends AppCompatActivity {
     public void terminateTest(View view){
         if (isAuto) {
             isAuto = false;
+            long[] pattern = {0, 100, 100, 100};
+            vibrator.vibrate(VibrationEffect.createWaveform(pattern, -1));
             tv_stopFlag.setText(this.getString(R.string.stopFlagMessage));
             btn_stop.setText(this.getString(R.string.measureResumeButton));
         } else {
             isAuto = true;
+            vibrator.vibrate(100);
             tv_stopFlag.setText("");
             btn_stop.setText(this.getString(R.string.measureStopButton));
         }
