@@ -34,3 +34,4 @@ All functions are done, ready to release
 Changes:
 
 1) Add the vibration to notify the stop of test.
+2) Forbid screen rotation in the workout activity

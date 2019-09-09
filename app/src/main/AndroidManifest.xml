@@ -11,7 +11,7 @@
         android:theme="@style/AppTheme">
         <activity android:name=".ResultsActivity"></activity>
         <activity android:name=".SetupActivity" />
-        <activity android:name=".WorkoutActivity" />
+        <activity android:name=".WorkoutActivity" android:screenOrientation="portrait" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
