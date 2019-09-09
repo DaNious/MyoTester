@@ -84,7 +84,7 @@ public class SetupActivity extends AppCompatActivity {
         //create the folder
         File folder = new File(savedPath + '/' + folderName);
         if (!folder.exists()) {
-            folder.mkdir();
+            folder.mkdirs();
             // create subfolders
             if (!createSubFolders(savedPath + '/' + folderName + '/')){
                 Toast.makeText(this, "Subfolders exist, PLEASE check the info", Toast.LENGTH_LONG).show();
@@ -106,11 +106,11 @@ public class SetupActivity extends AppCompatActivity {
         File relaxFolder = new File(folderPath + "/5Relax");
         if (!steadyFolder.exists() && !putUpFolder.exists() && !holdFolder.exists()
                 && !putDownFolder.exists() && !relaxFolder.exists()){
-            steadyFolder.mkdir();
-            putUpFolder.mkdir();
-            holdFolder.mkdir();
-            putDownFolder.mkdir();
-            relaxFolder.mkdir();
+            steadyFolder.mkdirs();
+            putUpFolder.mkdirs();
+            holdFolder.mkdirs();
+            putDownFolder.mkdirs();
+            relaxFolder.mkdirs();
             return true;
         }
         else

@@ -5,9 +5,10 @@
     <string name="measureStartButton">Start</string>>
     <string name="measureStopButton">Stop</string>>
     <string name="measureResumeButton">Cont</string>>
-    <string name="textMeasure">Press Demo-run to see the protocol, OR press START to begin a group of tests</string>
+    <string name="textMeasure">Press Demo-run to check the protocol, OR press START (Volume Up) button
+        to begin a group of tests</string>
     >
-    <string name="textMeasure_stop">Press STOP when getting fatigue</string>>
+    <string name="textMeasure_stop">Press STOP (Volume Down) button when getting fatigue</string>>
     <string name="testRunMessage">Please check the protocol</string>>
     <string name="countLabel">Current workout count:</string>>
     <string name="savedWorkoutCount">Saved workout count: </string>>

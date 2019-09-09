@@ -162,8 +162,8 @@
 
     <pl.droidsonroids.gif.GifImageView
         android:id="@+id/gifImage"
-        android:layout_width="375dp"
-        android:layout_height="313dp"
+        android:layout_width="312dp"
+        android:layout_height="261dp"
         android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -27,3 +27,6 @@ If the use press back at the results page, it will back to the main page
 
 After each group, it will ask whether you want to keep the last workout
 (as it can be badly done)
+
+# v0.3
+All functions are done, ready to release
