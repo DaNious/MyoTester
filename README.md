@@ -35,3 +35,4 @@ Changes:
 
 1) Add the vibration to notify the stop of test.
 2) Forbid screen rotation in the most activities.
+3) Saved file name starts from 01 instead of 1

@@ -273,10 +273,17 @@ public class WorkoutActivity extends AppCompatActivity {
     public void playAndRecord(String stepFolderName){
         Date date = new Date();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
-        file = new File(Environment.getExternalStorageDirectory().getAbsolutePath()
-                        + "/DriveSyncFiles/" + folderName + "/" + stepFolderName
-                        + "/" + String.valueOf(workoutCnt + 1) + "_musclePCM_" + dateFormat.format(date)
-                        + ".pcm");
+        if (workoutCnt <= 8) {
+            file = new File(Environment.getExternalStorageDirectory().getAbsolutePath()
+                            + "/DriveSyncFiles/" + folderName + "/" + stepFolderName
+                            + "/0" + String.valueOf(workoutCnt + 1) + "_musclePCM_" + dateFormat.format(date)
+                            + ".pcm");
+        } else {
+            file = new File(Environment.getExternalStorageDirectory().getAbsolutePath()
+                    + "/DriveSyncFiles/" + folderName + "/" + stepFolderName
+                    + "/" + String.valueOf(workoutCnt + 1) + "_musclePCM_" + dateFormat.format(date)
+                    + ".pcm");
+        }
         switch (stepFolderName){
             case "/1Steady":
                 lastSteadyFilePath = file.getAbsolutePath();
